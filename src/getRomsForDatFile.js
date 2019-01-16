@@ -1,7 +1,7 @@
 const { parse } = require("path");
 const _ = require("lodash");
 const DatFile = require("./models/datfile");
-const Timer = require("./models/timer");
+const Store = require("./models/store");
 
 async function getRomsForDatFile(filePath) {
   const games = await DatFile.get(filePath);
