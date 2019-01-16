@@ -13,7 +13,7 @@ async function getRomsForDatFile(filePath) {
 
 async function getGamesMatchingDatFile(games) {
   const collection = await Store.getCollection("roms", "files");
-  const query = getMongoQueryForDatFile(games);
+  const query = await getMongoQueryForDatFile(games);
   const findings = await (await collection.find(query)).toArray();
   const uniqueFindings = _.uniqBy(findings, ({ name }) => name);
   const sortedFindings = _.sortBy(uniqueFindings, ["name"]);
