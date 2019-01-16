@@ -5,8 +5,12 @@
   "repository": "git@github.com:LukasBombach/RomAudition.git",
   "author": "Lukas Bombach <lukas.bombach@googlemail.com>",
   "license": "MIT",
+  "scripts": {
+    "start": "node src/index.js"
+  },
   "dependencies": {
     "lodash": "4.17.11",
-    "mongodb": "3.1.11"
+    "mongodb": "3.1.11",
+    "xml2js": "0.4.19"
   }
 }
