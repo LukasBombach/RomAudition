@@ -27,7 +27,8 @@ async function getMongoQueryForDatFile(games) {
 }
 
 function normalizeRoms(roms) {
-  const extendedRoms = roms.map(addFieldsToRom);
+  const filteredRoms = roms.filter(({ crc }) => typeof crc !== "undefined");
+  const extendedRoms = filteredRoms.map(addFieldsToRom);
   return formatRoms(extendedRoms);
 }
 
@@ -45,12 +46,16 @@ function formatRoms(roms) {
 }
 
 function formatEntry(entry) {
-  const name = entry.name.toString();
-  const extension = entry.extension.toString();
-  const basename = entry.basename.toString();
-  const crc = entry.crc.toString().padStart(8, "0");
-  const size = parseInt(entry.size);
-  return { name, extension, basename, crc, size };
+  try {
+    const name = entry.name.toString();
+    const extension = entry.extension.toString();
+    const basename = entry.basename.toString();
+    const crc = entry.crc.toString().padStart(8, "0");
+    const size = parseInt(entry.size);
+    return { name, extension, basename, crc, size };
+  } catch (err) {
+    console.log(err);
+  }
 }
 
 function ensureOrder({ name, extension, basename, crc, size }) {
