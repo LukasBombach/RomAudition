@@ -1,4 +1,3 @@
-const { parse } = require("path");
 const _ = require("lodash");
 const DatFile = require("./models/datfile");
 const Store = require("./models/store");
@@ -13,53 +12,18 @@ async function getRomsForDatFile(filePath) {
 
 async function getGamesMatchingDatFile(games) {
   const collection = await Store.getCollection("roms", "files");
-  const query = await getMongoQueryForDatFile(games);
-  const findings = await (await collection.find(query)).toArray();
-  const uniqueFindings = _.uniqBy(findings, ({ name }) => name);
-  const sortedFindings = _.sortBy(uniqueFindings, ["name"]);
+  const queries = games.map(getMongoQueryForDatFile);
+  const results = await Promise.all(queries.map(q => collection.findOne(q)));
+  const findings = results.filter(g => g !== null);
+  const sortedFindings = _.sortBy(findings, ["name"]);
   return sortedFindings;
 }
 
-async function getMongoQueryForDatFile(games) {
-  const basename = { $in: games.map(({ name }) => name) };
-  const entries = { $in: games.map(({ roms }) => normalizeRoms(roms)) };
+function getMongoQueryForDatFile(game) {
+  const basename = game.name;
+  const $all = game.roms.map(({ crc }) => ({ $elemMatch: { crc } }));
+  const entries = { $all };
   return { basename, entries };
-}
-
-function normalizeRoms(roms) {
-  const filteredRoms = roms.filter(({ crc }) => typeof crc !== "undefined");
-  const extendedRoms = filteredRoms.map(addFieldsToRom);
-  return formatRoms(extendedRoms);
-}
-
-function addFieldsToRom({ name, crc, size }) {
-  const extension = parse(name).ext.substr(1);
-  const basename = parse(name).name;
-  return { name, extension, basename, crc, size };
-}
-
-function formatRoms(roms) {
-  const sortedEntries = _.sortBy(roms, ["name"]);
-  const formattedEntries = sortedEntries.map(entry => formatEntry(entry));
-  const orderedEntries = formattedEntries.map(entry => ensureOrder(entry));
-  return orderedEntries;
-}
-
-function formatEntry(entry) {
-  try {
-    const name = entry.name.toString();
-    const extension = entry.extension.toString();
-    const basename = entry.basename.toString();
-    const crc = entry.crc.toString().padStart(8, "0");
-    const size = parseInt(entry.size);
-    return { name, extension, basename, crc, size };
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-function ensureOrder({ name, extension, basename, crc, size }) {
-  return { name, extension, basename, crc, size };
 }
 
 function isIn(game, available) {
