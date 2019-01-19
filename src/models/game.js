@@ -10,12 +10,13 @@ const getRomsHandlers = {
 };
 
 class Game {
-  static async fromDisk(path) {
+  static async fromDisk(dir, file) {
+    const path = dir + file;
     const name = parse(path).name;
     const extension = parse(path).ext.substr(1);
     const roms = await Game.getRoms(path, extension);
     const crcFingerprint = Game.getCrcFingerprint(roms);
-    return { name, extension, roms, crcFingerprint };
+    return { name, extension, roms, crcFingerprint, dir, file };
   }
 
   static async getRoms(path, extension) {
@@ -35,7 +36,10 @@ class Game {
   }
 
   static getCrcFingerprint(roms) {
-    return roms.map(({ crc }) => crc).join(",");
+    return roms
+      .map(({ crc }) => crc)
+      .sort()
+      .join(",");
   }
 }
 

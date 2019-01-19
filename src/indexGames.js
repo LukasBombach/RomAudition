@@ -17,7 +17,7 @@ async function getFiles(dir) {
 
 async function getGames(dir, files) {
   const queue = new Queue({ concurrency: 1 });
-  const loadGames = files.map(file => () => Game.fromDisk(dir + file));
+  const loadGames = files.map(file => () => Game.fromDisk(dir, file));
   const games = await queue.addAll(loadGames);
   return games;
 }
