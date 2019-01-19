@@ -1,6 +1,6 @@
 const path = require("path");
-const getRomsForDatFile = require("./getRomsForDatFile");
-const indexGames = require("./indexGames");
+const getRomsForDatFile = require("./src/getRomsForDatFile");
+const indexGames = require("./src/indexGames");
 
 (async () => {
   /* let datFile;
@@ -17,4 +17,5 @@ const indexGames = require("./indexGames");
   await indexGames(
     "/Users/lbombach/Downloads/Retro/MAME/RETRO_LEGENDS rom pack/Neo Geo/roms"
   );
+  process.exit(0);
 })();

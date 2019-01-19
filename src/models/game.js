@@ -15,8 +15,8 @@ class Game {
     const name = parse(path).name;
     const extension = parse(path).ext.substr(1);
     const roms = await Game.getRoms(path, extension);
-    const crcFingerprint = Game.getCrcFingerprint(roms);
-    return { name, extension, roms, crcFingerprint, dir, file };
+    const crcs = Game.getCrcFingerprint(roms);
+    return { name, extension, roms, crcs, dir, file };
   }
 
   static async getRoms(path, extension) {

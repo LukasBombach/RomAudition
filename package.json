@@ -1,12 +1,12 @@
 {
   "name": "rom-audition",
   "version": "1.0.0",
-  "main": "src/index.js",
+  "main": "start.js",
   "repository": "git@github.com:LukasBombach/RomAudition.git",
   "author": "Lukas Bombach <lukas.bombach@googlemail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node src/index.js"
+    "start": "node start.js"
   },
   "dependencies": {
     "7zip-bin": "4.1.0",
