@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"7zip-bin@4.1.0":
+  version "4.1.0"
+  resolved "https://spring.jfrog.io/spring/api/npm/npm-red/7zip-bin/-/7zip-bin-4.1.0.tgz#33eff662a5c39c0c2061170cc003c5120743fff0"
+  integrity sha1-M+/2YqXDnAwgYRcMwAPFEgdD//A=
+
 adm-zip@0.4.13:
   version "0.4.13"
   resolved "https://spring.jfrog.io/spring/api/npm/npm-red/adm-zip/-/adm-zip-0.4.13.tgz#597e2f8cc3672151e1307d3e95cddbc75672314a"
@@ -65,6 +70,11 @@ mongodb@3.1.11:
   dependencies:
     mongodb-core "3.1.10"
     safe-buffer "^5.1.2"
+
+p-queue@3.0.0:
+  version "3.0.0"
+  resolved "https://spring.jfrog.io/spring/api/npm/npm-red/p-queue/-/p-queue-3.0.0.tgz#0ef247082f0dd5a21b66e2cfe8fb7b06db13fb52"
+  integrity sha1-DvJHCC8N1aIbZuLP6Pt7BtsT+1I=
 
 recursive-readdir@2.2.2:
   version "2.2.2"

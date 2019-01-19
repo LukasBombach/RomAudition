@@ -1,9 +1,12 @@
 const readDirRec = require("recursive-readdir");
+const Queue = require("p-queue");
 const Game = require("./models/game");
 
 async function indexGames(dir) {
   const files = await getFiles(dir);
   const games = await getGames(dir, files);
+  // write games to datase (with each game)
+  return games;
 }
 
 async function getFiles(dir) {

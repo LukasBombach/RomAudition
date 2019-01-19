@@ -1,8 +1,9 @@
 const path = require("path");
 const getRomsForDatFile = require("./getRomsForDatFile");
+const indexGames = require("./indexGames");
 
 (async () => {
-  let datFile;
+  /* let datFile;
   datFile = `${__dirname}/../datfiles/pandora_gngeo_084_filtered.dat`;
   datFile = `${__dirname}/../datfiles/FB Alpha (ClrMame Pro XML, Neogeo only).dat`;
   datFile = `${__dirname}/../datfiles/FB Alpha (ClrMame Pro XML, Arcade only).dat`;
@@ -11,5 +12,9 @@ const getRomsForDatFile = require("./getRomsForDatFile");
   console.log(JSON.stringify(stats, null, 2));
   // console.log("missing", JSON.stringify(missing.map(({ name }) => name)));
   // console.log(JSON.stringify(missing[0], null, 2));
-  process.exit(0);
+  process.exit(0); */
+
+  await indexGames(
+    "/Users/lbombach/Downloads/Retro/MAME/RETRO_LEGENDS rom pack/Neo Geo/roms"
+  );
 })();

@@ -27,7 +27,7 @@ class Game {
   }
 
   static getRom(entry) {
-    const name = entry.basename.toString();
+    const name = entry.name.toString();
     const extension = entry.extension.toString();
     const crc = entry.crc.toString().padStart(8, "0");
     const size = parseInt(entry.size);
@@ -35,7 +35,7 @@ class Game {
   }
 
   static getCrcFingerprint(roms) {
-    return roms.map(({ name, extension, crc }) => ({ name, extension, crc }));
+    return roms.map(({ crc }) => crc).join(",");
   }
 }
 
