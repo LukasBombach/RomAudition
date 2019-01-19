@@ -11,19 +11,13 @@ async function getRomsForDatFile(filePath) {
 }
 
 async function getGamesMatchingDatFile(games) {
-  const collection = await Store.getCollection("roms", "files");
-  const queries = games.map(getMongoQueryForDatFile);
-  const results = await Promise.all(queries.map(q => collection.findOne(q)));
-  const findings = results.filter(g => g !== null);
-  const sortedFindings = _.sortBy(findings, ["name"]);
-  return sortedFindings;
-}
-
-function getMongoQueryForDatFile(game) {
-  const basename = game.name;
-  const $all = game.roms.map(({ crc }) => ({ $elemMatch: { crc } }));
-  const entries = { $all };
-  return { basename, entries };
+  const collection = await Store.getCollection("games", "files");
+  const name = { $in: games.map(({ name }) => name) };
+  const crcs = { $in: games.map(({ crcs }) => crcs) };
+  const query = { name, crcs };
+  const results = await (await collection.find(query)).toArray();
+  const available = _.sortBy(_.uniqBy(results, ({ name }) => name), "name");
+  return available;
 }
 
 function isIn(game, available) {
