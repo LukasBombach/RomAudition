@@ -2,6 +2,9 @@ const readDirRec = require("recursive-readdir");
 const Queue = require("p-queue");
 const Store = require("./models/store");
 const Game = require("./models/game");
+const Progress = require("./models/progress");
+
+let gamesProgress;
 
 async function indexGames(dir) {
   const files = await getFiles(dir);
@@ -17,10 +20,24 @@ async function getFiles(dir) {
 }
 
 async function getGames(dir, files) {
+  gamesProgress = new Progress(files.length);
   const queue = new Queue({ concurrency: 1 });
-  const loadGames = files.map(file => () => Game.fromDisk(dir, file));
+  const loadGames = files.map((file, i) => () => readGame(dir, file, i));
   const games = await queue.addAll(loadGames);
   return games;
+}
+
+async function readGame(dir, file, i) {
+  await Game.fromDisk(dir, file);
+  if (i % 100 === 0) logStatus(i);
+}
+
+function logStatus(i) {
+  const max = gamesProgress.max;
+  const percent = ((i / max) * 100).toFixed(2);
+  const { took, remaining } = gamesProgress.lap(i);
+  const remainingMinutes = (remaining / 60).toFixed(2);
+  console.log(`${percent}% ${i} / ${max} (${took}s / ${remainingMinutes})`);
 }
 
 async function writeGamesToDatabase(games) {

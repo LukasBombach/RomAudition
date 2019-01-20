@@ -13,7 +13,9 @@ class Game {
   static async fromDisk(dir, file) {
     const path = dir + file;
     const name = parse(path).name;
-    const extension = parse(path).ext.substr(1);
+    const extension = parse(path)
+      .ext.substr(1)
+      .toLowerCase();
     const roms = await Game.getRoms(path, extension);
     const crcs = Game.getCrcFingerprint(roms);
     return { name, extension, roms, crcs, dir, file };
@@ -22,6 +24,7 @@ class Game {
   static async getRoms(path, extension) {
     const handler = getRomsHandlers[extension] || getRomsHandlers.default;
     const entries = await handler(path);
+    //console.log(path);
     const roms = entries.map(entry => Game.getRom(entry));
     const sortedRoms = _.sortBy(roms, "name");
     return sortedRoms;
