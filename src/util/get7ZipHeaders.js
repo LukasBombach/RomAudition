@@ -1,24 +1,42 @@
-const fs = require("fs");
-const promisify = require("util").promisify;
 const getEntriesFrom7Zip = require("./getEntriesFrom7Zip");
-const open = promisify(fs.open);
-const read = promisify(fs.read);
+const SevenZip = require("../models/sevenZip/sevenZip");
 
 module.exports = async () => {
   const file = "/Users/lbombach/Desktop/7ziptest/btchamp.7z";
   const entries = await getEntriesFrom7Zip(file);
-  const fd = await open(file, "r");
+  console.log(JSON.stringify(entries, null, 2));
+
+  const sevenZip = await SevenZip.fromFile(file);
+
+  const headerpos = await sevenZip.getHeaderPos();
+
+  console.log("");
+
+  /* const fd = await open(file, "r");
 
   console.log("Signature     ", (await str(fd, 0, 1)) + (await crc(fd, 2, 5)));
   console.log("Version       ", await version(fd));
   console.log("startHeaderCRC", await crc(fd, 8, 11));
 
-  const nextHeaderOffset = await uIint64(fd, 12, 12);
-  const nextHeaderSize = await uIint64(fd, 13, 13);
-  const nextHeaderCRC = await crc(fd, 14, 17);
+  const nextHeaderOffset = await uIint64(fd, 12, 19);
+  const nextHeaderSize = await uIint64(fd, 20, 27);
+  const nextHeaderCRC = await crc(fd, 28, 31);
 
-  console.log(JSON.stringify(entries, null, 2));
-};
+  const nextHeaderStart = 32 + nextHeaderOffset;
+
+  const nextHeaderBuffer = await readBytes(
+    fd,
+    nextHeaderStart,
+    nextHeaderStart
+  );
+  const nextHeaderBufferIsHeader = nextHeaderBuffer.toString("hex");
+
+  if (nextHeaderBufferIsHeader !== "01") {
+    throw new Error("Did not find a header marker at next header position");
+  }
+
+  console.log("."); */
+}; /* 
 
 async function readBytes(fd, begin, end) {
   const bytes = end + 1 - begin;
@@ -50,4 +68,4 @@ async function version(fd) {
   return buffer.readUIntBE().toString() + buffer2.readUIntBE().toString();
 }
 
-async function startHeader(fd) {}
+async function startHeader(fd) {} */
