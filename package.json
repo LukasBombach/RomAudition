@@ -11,10 +11,14 @@
   "dependencies": {
     "7zip-bin": "4.1.0",
     "adm-zip": "0.4.13",
+    "fs-ext": "1.2.1",
     "lodash": "4.17.11",
     "mongodb": "3.1.11",
     "p-queue": "3.0.0",
     "recursive-readdir": "2.2.2",
     "xml2js": "0.4.19"
+  },
+  "prettier": {
+    "printWidth": 200
   }
 }

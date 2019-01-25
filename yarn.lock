@@ -35,6 +35,13 @@ concat-map@0.0.1:
   resolved "https://spring.jfrog.io/spring/api/npm/npm-red/concat-map/-/concat-map-0.0.1.tgz#d8a96bd77fd68df7793a73036a3ba0d5405d477b"
   integrity sha1-2Klr13/Wjfd5OnMDajug1UBdR3s=
 
+fs-ext@1.2.1:
+  version "1.2.1"
+  resolved "https://spring.jfrog.io/spring/api/npm/npm-red/fs-ext/-/fs-ext-1.2.1.tgz#1c2c9c115e48a1af99374c7b9aa9d39019d5f409"
+  integrity sha1-HCycEV5Ioa+ZN0x7mqnTkBnV9Ak=
+  dependencies:
+    nan "^2.10.0"
+
 lodash@4.17.11:
   version "4.17.11"
   resolved "https://spring.jfrog.io/spring/api/npm/npm-red/lodash/-/lodash-4.17.11.tgz#b39ea6229ef607ecd89e2c8df12536891cac9b8d"
@@ -70,6 +77,11 @@ mongodb@3.1.11:
   dependencies:
     mongodb-core "3.1.10"
     safe-buffer "^5.1.2"
+
+nan@^2.10.0:
+  version "2.12.1"
+  resolved "https://spring.jfrog.io/spring/api/npm/npm-red/nan/-/nan-2.12.1.tgz#7b1aa193e9aa86057e3c7bbd0ac448e770925552"
+  integrity sha1-exqhk+mqhgV+PHu9CsRI53CSVVI=
 
 p-queue@3.0.0:
   version "3.0.0"

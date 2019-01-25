@@ -1,8 +1,9 @@
-const fs = require("fs");
+const fs = require("fs-ext");
 const promisify = require("util").promisify;
 const Header = require("./header");
 const open = promisify(fs.open);
 const read = promisify(fs.read);
+const seek = promisify(fs.seek);
 
 class File {
   static async open(file) {
@@ -12,6 +13,15 @@ class File {
 
   constructor(fd) {
     this.fd = fd;
+  }
+
+  async seek(position) {
+    return await seek(this.fd, position, 0);
+  }
+
+  async byte(position) {
+    const buffer = await this.readBytes(position, position + 1);
+    return buffer.readUIntLE(0, 1);
   }
 
   async uInt64(begin, end) {
@@ -37,6 +47,13 @@ class File {
 
   expect(val, expectedVal, errorMessage) {
     if (val !== expectedVal) throw new Error(errorMessage);
+  }
+
+  expectByte(position, expectedValue, name) {
+    const value = await this.byte(position);
+    if (value !== expectedValue) {
+      throw new Error(`Expected ${name} (0x${expectedValue.toString("hex")}) at position ${position} but got 0x${value.toString("hex")}`);
+    }
   }
 }
 
