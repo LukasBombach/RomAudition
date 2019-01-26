@@ -17,6 +17,11 @@ balanced-match@^1.0.0:
   resolved "https://spring.jfrog.io/spring/api/npm/npm-red/balanced-match/-/balanced-match-1.0.0.tgz#89b4d199ab2bee49de164ea02b89ce462d71b767"
   integrity sha1-ibTRmasr7kneFk6gK4nORi1xt2c=
 
+bitwise@2.0.1:
+  version "2.0.1"
+  resolved "https://spring.jfrog.io/spring/api/npm/npm-red/bitwise/-/bitwise-2.0.1.tgz#1200e86c4ce94a8f41d9dc8ed24f918cf857525f"
+  integrity sha1-EgDobEzpSo9B2dyO0k+RjPhXUl8=
+
 brace-expansion@^1.1.7:
   version "1.1.11"
   resolved "https://spring.jfrog.io/spring/api/npm/npm-red/brace-expansion/-/brace-expansion-1.1.11.tgz#3c7fcbf529d87226f3d2f52b966ff5271eb441dd"
