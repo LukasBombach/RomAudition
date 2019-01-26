@@ -30,7 +30,7 @@ class Headers {
     const marker = await file.int();
     const handler = handlers[marker.toString()];
     if (marker === kEnd) return [];
-    if (!handler) return `No handler for ${marker}`; // throw new Error(`No handler for ${marker}`);
+    if (!handler) return [`No handler for ${marker}`]; // throw new Error(`No handler for ${marker}`);
     const header = await Headers[handler](file);
     return [header, ...(await Headers.readHeaders(file))];
   }
@@ -56,21 +56,36 @@ class Headers {
     if (isExternal !== 0) throw new Error("Not implemented");
     const folders = await Headers.folders(file, numFolders); // invalidated
     const unpacksizeMarker = await file.byte(); // ok
-
+    for (let i = 0; i < folders.length; i++) {
+      for (let j = 0; j < folders[i].coders.length; j++) {
+        try {
+          await file.uInt64(); // omitted UnPackSize
+        } catch (err) {
+          console.log(err.message);
+        }
+      }
+    }
+    const endMarker = await file.byte(); // ok
+    if (endMarker !== kEnd) throw new Error("Not implemented");
     return {};
   }
 
   static async folders(file, numFolders) {
+    const folders = [];
     for (let i = 0; i < numFolders; i++) {
       const numCoders = await file.uInt64(); // ok
       const coders = await Headers.coders(file, numCoders);
+      folders.push({ numCoders, coders });
     }
+    return folders;
   }
 
   static async coders(file, numCoders) {
+    const coders = [];
+
     for (let i = 0; i < numCoders; i++) {
       const info = await file.bits();
-      const codecIdSize = bitwise.byte.write(new Array(4).fill(0).concat(info.slice(0, 3)));
+      const codecIdSize = bitwise.byte.write(new Array(4).fill(0).concat(info.slice(0, 4).reverse()));
       const isComplexCoder = !!info[4];
       const hasAttributes = !!info[5];
       const codecId = await file.byte(codecIdSize);
@@ -79,14 +94,15 @@ class Headers {
         const numOutStreams = file.uInt64();
       }
       if (hasAttributes) {
-        const propertiesSize = file.uInt64();
+        const propertiesSize = await file.uInt64();
         const properties = await file.byte(propertiesSize);
       }
       if (isComplexCoder) {
         throw new Error("Not implemented");
       }
+      coders.push("Omitted information");
     }
-    return "omitted information";
+    return coders;
   }
 }
 

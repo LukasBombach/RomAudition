@@ -25,7 +25,7 @@ class File {
 
   async bits() {
     const byte = await this.byte();
-    return bitwise.byte.read(byte);
+    return bitwise.byte.read(byte).reverse();
   }
 
   async int() {
@@ -39,11 +39,29 @@ class File {
   }
 
   async uInt64() {
-    const buffer = await this.readBytes(1);
-    const byteAsNum = buffer.readUIntLE(0, 1);
-    const hasValue = byteAsNum & 128;
-    if (hasValue) throw new Error("uhm, not implemented");
-    return byteAsNum & 127;
+    const firstByte = await this.byte();
+    const hasValue = firstByte & 128;
+    if (!hasValue) return firstByte & 127;
+    const numExtraBytes = this.numExtraBytes(firstByte);
+    const extraBytesValue = await this.byte(numExtraBytes);
+    const firstByteValue = this.firstByteValue(firstByte);
+    return (firstByteValue << (8 * numExtraBytes)) + extraBytesValue;
+  }
+
+  numExtraBytes(byte) {
+    const bits = bitwise.byte.read(byte);
+    const zeroIndex = bits.indexOf(0);
+    return zeroIndex > -1 ? zeroIndex : 8;
+  }
+
+  firstByteValue(byte) {
+    const bits = bitwise.byte.read(byte);
+    const zeroIndex = bits.indexOf(0);
+    const zeros = new Array(zeroIndex).fill(0);
+    const ones = new Array(8 - zeroIndex).fill(1);
+    const maskBits = [...zeros, ...ones];
+    const maskByte = bitwise.byte.write(maskBits);
+    return byte & maskByte;
   }
 
   async readBytes(length) {
