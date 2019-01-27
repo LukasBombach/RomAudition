@@ -1,8 +1,8 @@
-const fs = require("fs-ext");
+const fs = require("fs");
 const bitwise = require("bitwise");
 const promisify = require("util").promisify;
 const open = promisify(fs.open);
-const seek = promisify(fs.seek);
+const read = promisify(fs.read);
 
 class File {
   static async open(file) {
@@ -10,12 +10,14 @@ class File {
     return new File(fd);
   }
 
-  constructor(fd) {
+  constructor(fd, position = 0) {
     this.fd = fd;
+    this.position = position;
   }
 
-  async seek(position) {
-    return await seek(this.fd, position, 0);
+  seek(position) {
+    this.position = position;
+    return this;
   }
 
   async byte(len = 1) {
@@ -66,7 +68,8 @@ class File {
 
   async readBytes(length) {
     const buffer = Buffer.alloc(length);
-    await fs.read(this.fd, buffer, 0, length);
+    await read(this.fd, buffer, 0, length, this.position);
+    this.position += length;
     return buffer;
   }
 }

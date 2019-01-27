@@ -5,17 +5,20 @@ const kEnd = 0x00;
 const kMainStreamsInfo = 0x04;
 const kPackInfo = 0x06;
 const kUnPackInfo = 0x07;
+const kSubStreamsInfo = 0x08;
 
 const handlers = {
   [kMainStreamsInfo.toString()]: "mainStreamsInfo",
   [kPackInfo.toString()]: "packInfo",
   [kUnPackInfo.toString()]: "unPackInfo"
+  // [kSubStreamsInfo.toString()]: "subStreamsInfo"
 };
 
 class Headers {
   static async get(path) {
     const file = await File.open(path);
     const headerPosition = await Headers.getHeaderPosition(file);
+    console.log(headerPosition, "headerPosition");
     await file.seek(headerPosition);
     return await Headers.readHeaders(file);
   }
@@ -29,6 +32,7 @@ class Headers {
   static async readHeaders(file) {
     const marker = await file.int();
     const handler = handlers[marker.toString()];
+    console.log(marker, handler);
     if (marker === kEnd) return [];
     if (!handler) return [`No handler for ${marker}`]; // throw new Error(`No handler for ${marker}`);
     const header = await Headers[handler](file);
@@ -103,6 +107,10 @@ class Headers {
       coders.push("Omitted information");
     }
     return coders;
+  }
+
+  static subStreamsInfo(file) {
+    return ["subStreamsInfo"];
   }
 }
 
