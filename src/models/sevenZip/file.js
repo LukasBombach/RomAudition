@@ -35,6 +35,11 @@ class File {
     return buffer.readUIntLE(0, 1);
   }
 
+  async bool() {
+    const int = await this.int();
+    return !!int;
+  }
+
   async hex() {
     const buffer = await this.readBytes(1);
     return buffer.toString("hex");
