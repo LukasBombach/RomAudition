@@ -6,7 +6,8 @@
   "author": "Lukas Bombach <lukas.bombach@googlemail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "node start.js"
+    "start": "node start.js",
+    "dev": "nodemon start.js"
   },
   "dependencies": {
     "7zip-bin": "4.1.0",
@@ -14,6 +15,7 @@
     "bitwise": "2.0.1",
     "lodash": "4.17.11",
     "mongodb": "3.1.11",
+    "nodemon": "1.18.9",
     "p-queue": "3.0.0",
     "recursive-readdir": "2.2.2",
     "xml2js": "0.4.19"
