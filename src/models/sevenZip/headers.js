@@ -29,7 +29,7 @@ class Headers {
     const handler = handlers[marker.toString()];
     if (marker === kEnd) return [];
     if (!handler) return [`No handler for ${marker}. Stopping.`];
-    console.log(marker, handler.name);
+    console.log(file.position, marker, handler.name);
     const header = await handler(file);
     return [header, ...(await Headers.readHeaders(file))];
   }

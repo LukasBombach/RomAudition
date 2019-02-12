@@ -13,6 +13,7 @@ class File {
   constructor(fd, position = 0) {
     this.fd = fd;
     this.position = position;
+    this.data = {};
   }
 
   seek(position) {
@@ -40,9 +41,14 @@ class File {
     return !!int;
   }
 
-  async hex() {
-    const buffer = await this.readBytes(1);
-    return buffer.toString("hex");
+  async hex(len = 1) {
+    const buffer = await this.readBytes(len);
+    return buffer
+      .toString("hex")
+      .padStart(len * 2, "0")
+      .match(/.{2}/g)
+      .reverse()
+      .join("");
   }
 
   async uInt64() {
@@ -76,6 +82,10 @@ class File {
     await read(this.fd, buffer, 0, length, this.position);
     this.position += length;
     return buffer;
+  }
+
+  log(...args) {
+    console.log(this.position, ...args);
   }
 }
 
