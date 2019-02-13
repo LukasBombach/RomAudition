@@ -11,10 +11,14 @@ class File {
   }
 
   static formatHex(num) {
-    const hexDigits = Math.floor(16 / num) + 1;
-    const pad = hexDigits * 2;
-    const hex = num.toString(16).padStart(pad, "0");
-    return `0x${hex} (${num})"`;
+    try {
+      const hexDigits = Math.floor(16 / num) + 1;
+      const pad = hexDigits * 2;
+      const hex = num.toString(16).padStart(pad, "0");
+      return `0x${hex} (${num})"`;
+    } catch (err) {
+      return "err " + num;
+    }
   }
 
   constructor(fd, position = 0) {
@@ -25,6 +29,11 @@ class File {
 
   seek(position) {
     this.position = position;
+    return this;
+  }
+
+  fastForward(offset) {
+    this.position += offset;
     return this;
   }
 
@@ -58,20 +67,24 @@ class File {
       .join("");
   }
 
-  async uInt64() {
+  async uInt64(log) {
     const firstByte = await this.byte();
     const hasValue = firstByte & 128;
-    if (!hasValue) return firstByte & 127;
+    if (!hasValue) {
+      await this.fastForward(7);
+      return firstByte & 127;
+    }
     const numExtraBytes = this.numExtraBytes(firstByte);
     const extraBytesValue = await this.byte(numExtraBytes);
-    const firstByteValue = this.firstByteValue(firstByte);
-    return (firstByteValue << (8 * numExtraBytes)) + extraBytesValue;
+    const value = (extraBytesValue << 8) + firstByte;
+    await this.fastForward(8 - numExtraBytes - 1);
+    return value;
   }
 
   numExtraBytes(byte) {
-    const bits = bitwise.byte.read(byte);
+    const bits = bitwise.byte.read(byte).reverse();
     const zeroIndex = bits.indexOf(0);
-    return zeroIndex > -1 ? zeroIndex : 8;
+    return zeroIndex > -1 ? zeroIndex + 1 : 8;
   }
 
   firstByteValue(byte) {

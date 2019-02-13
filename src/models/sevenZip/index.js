@@ -19,19 +19,28 @@ const handlers = {
 async function parseFile(path) {
   const file = await File.open(path);
   try {
-    await jumpToHeaders(file);
+    await readSignature(file);
     await readHeaders(file);
   } catch (err) {
-    console.log(`Got error: ${err.message}`);
+    console.log(err.stack);
   }
   return file.data;
 }
 
-async function jumpToHeaders(file) {
-  await file.seek(12);
-  const nextHeaderOffset = await file.uInt64();
-  const headerPosition = 32 + 1 + nextHeaderOffset;
-  await file.seek(headerPosition);
+async function readSignature(file) {
+  file.data.signature = {
+    signature: await file.hex(6),
+    majorVersion: await file.int(),
+    minorVersion: await file.int(),
+    startHeaderCrc: await file.hex(4),
+    nextHeaderOffset: await file.uInt64(true),
+    nextHeaderSize: await file.uInt64(true),
+    nextHeaderCrc: await file.hex(4)
+  };
+  file.data.signature.debug = {
+    nextHeaderOffsetHex: File.formatHex(file.data.signature.nextHeaderOffset),
+    nextHeaderSizeHex: File.formatHex(file.data.signature.nextHeaderSize)
+  };
 }
 
 async function readHeaders(file) {
