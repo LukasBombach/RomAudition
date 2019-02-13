@@ -20,5 +20,9 @@ module.exports = async function unPackInfo(file) {
   }
   const endMarker = await file.byte(); // ok
   if (endMarker !== kEnd) throw new Error("Not implemented");
-  return {};
+  file.data.unPackInfo = {
+    numFolders,
+    isExternal,
+    folders
+  };
 };

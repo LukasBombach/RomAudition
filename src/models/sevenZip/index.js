@@ -16,12 +16,16 @@ const handlers = {
   [kSubStreamsInfo.toString()]: subStreamsInfo
 };
 
-module.exports = async path => {
+async function parseFile(path) {
   const file = await File.open(path);
-  await jumpToHeaders(file);
-  await readHeaders(file);
+  try {
+    await jumpToHeaders(file);
+    await readHeaders(file);
+  } catch (err) {
+    console.log(`Got error: ${err.message}`);
+  }
   return file.data;
-};
+}
 
 async function jumpToHeaders(file) {
   await file.seek(12);
@@ -35,7 +39,9 @@ async function readHeaders(file) {
     const marker = await file.int();
     const handler = handlers[marker.toString()];
     if (marker === kEnd) break;
-    if (!handler) throw new Error(`No handler for ${marker}`);
+    if (!handler) throw new Error(`No handler for ${File.formatHex(marker)}`);
     await handler(file);
   }
 }
+
+module.exports = parseFile;

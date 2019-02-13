@@ -1,11 +1,13 @@
-const Headers = require("./src/models/sevenZip/headers");
+const parseFile = require("./src/models/sevenZip");
 
 (async () => {
   console.log("\x1Bc");
-  const path = `${__dirname}/src/models/sevenZip/7ziptest/btchamp.7z`;
-  const headers = await Headers.get(path);
-
-  console.log(JSON.stringify(headers, null, 2));
+  // const path = `${__dirname}/src/models/sevenZip/7ziptest/btchamp.7z`;
+  const path = "/Users/lbombach/Downloads/Retro/MAME/MAME_0188u0_Complete_Romset/roms/2mindril.7z";
+  console.time("Execution Time");
+  const data = await parseFile(path);
+  console.timeEnd("Execution Time");
+  console.log("\n", JSON.stringify(data, null, 2), "\n");
 
   process.exit(0);
 })();

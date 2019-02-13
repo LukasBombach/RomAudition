@@ -13,19 +13,19 @@ module.exports = async function subStreamsInfo(file) {
   const firstByte = await file.byte();
   const handler = handlers[firstByte.toString()];
   if (firstByte === kEnd) return [];
-  if (!handler) return [`No handler for subStreamsInfo ${firstByte.toString(16)}`];
-  const value = await handler(file);
-  return [...value, ...(await subStreamsInfo(file))];
+  if (!handler) throw new Error(`No handler for subStreamsInfo ${firstByte.toString(16).padStart(2, "0")}`);
+  file.data.subStreamsInfo = file.data.subStreamsInfo || {};
+  await handler(file);
+  await subStreamsInfo(file);
 };
 
 async function crc(file) {
   const num = file.data.packInfo.numPackStreams;
-  const crcs = [];
+  file.data.subStreamsInfo.crcs = [];
   for (let i = 0; i < num; i++) {
     const allAreDefined = await file.bool();
     if (!allAreDefined) throw new Error("Not Implemented");
     const crc = await file.hex(4);
-    crcs.push(crc);
+    file.data.subStreamsInfo.crcs.push(crc);
   }
-  return crcs;
 }

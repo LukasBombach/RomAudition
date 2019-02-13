@@ -10,6 +10,13 @@ class File {
     return new File(fd);
   }
 
+  static formatHex(num) {
+    const hexDigits = Math.floor(16 / num) + 1;
+    const pad = hexDigits * 2;
+    const hex = num.toString(16).padStart(pad, "0");
+    return `0x${hex} (${num})"`;
+  }
+
   constructor(fd, position = 0) {
     this.fd = fd;
     this.position = position;
