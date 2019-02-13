@@ -660,6 +660,11 @@ ini@^1.3.4, ini@~1.3.0:
   resolved "https://spring.jfrog.io/spring/api/npm/npm-red/ini/-/ini-1.3.5.tgz#eee25f56db1c9ec6085e0c22778083f596abf927"
   integrity sha1-7uJfVtscnsYIXgwid4CD9Zar+Sc=
 
+int64-buffer@0.99.1007:
+  version "0.99.1007"
+  resolved "https://spring.jfrog.io/spring/api/npm/npm-red/int64-buffer/-/int64-buffer-0.99.1007.tgz#211ea089a2fdb960070a2e77cd6d17dc456a5220"
+  integrity sha1-IR6giaL9uWAHCi53zW0X3EVqUiA=
+
 is-accessor-descriptor@^0.1.6:
   version "0.1.6"
   resolved "https://spring.jfrog.io/spring/api/npm/npm-red/is-accessor-descriptor/-/is-accessor-descriptor-0.1.6.tgz#a9e12cb3ae8d876727eeef3843f8a0897b5c98d6"

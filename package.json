@@ -13,6 +13,7 @@
     "7zip-bin": "4.1.0",
     "adm-zip": "0.4.13",
     "bitwise": "2.0.1",
+    "int64-buffer": "0.99.1007",
     "lodash": "4.17.11",
     "mongodb": "3.1.11",
     "nodemon": "1.18.9",
