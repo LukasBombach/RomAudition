@@ -5,6 +5,7 @@ const unPackInfo = require("./handlers/unPackInfo");
 const encodedHeader = require("./handlers/encodedHeader");
 
 const kEnd = 0x00;
+const kHeader = 0x01;
 const kMainStreamsInfo = 0x04;
 const kPackInfo = 0x06;
 const kUnPackInfo = 0x07;
@@ -12,6 +13,7 @@ const kSubStreamsInfo = 0x08;
 const kEncodedHeader = 0x17;
 
 const handlers = {
+  [kHeader.toString()]: readHeaders,
   [kMainStreamsInfo.toString()]: readHeaders,
   [kPackInfo.toString()]: packInfo,
   [kUnPackInfo.toString()]: unPackInfo,
@@ -49,6 +51,7 @@ async function jumpToHeaders(file) {
 
 async function readHeaders(file) {
   while (true) {
+    file.log("Marker position");
     const marker = await file.int();
     const handler = handlers[marker.toString()];
     if (marker === kEnd) break;
