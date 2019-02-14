@@ -10,11 +10,11 @@ module.exports = async function coders(file, numCoders) {
     const hasAttributes = !!info[5];
     const codecId = await file.byte(codecIdSize);
     if (isComplexCoder) {
-      const numInStreams = file.uInt64();
-      const numOutStreams = file.uInt64();
+      const numInStreams = file.szUInt64();
+      const numOutStreams = file.szUInt64();
     }
     if (hasAttributes) {
-      const propertiesSize = await file.uInt64();
+      const propertiesSize = await file.szUInt64();
       const properties = await file.byte(propertiesSize);
     }
     if (isComplexCoder) {
