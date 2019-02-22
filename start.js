@@ -1,23 +1,33 @@
-const parseFile = require("./src/models/sevenZip");
+const readDirRec = require("recursive-readdir");
+const lsar = require("lsar-native");
+const pretty = require("pretty-hrtime");
+const chalk = require("chalk");
+
+async function indexFolder(path) {
+  const { baseDir, paths, numGames, time } = await listGames(path);
+  const logInterval = Math.floor(numGames / 100);
+  const hrstart = process.hrtime();
+  console.log(chalk.dim(pretty(time)), `Found ${numGames} games`);
+  for (let i = 0; i < numGames; i++) {
+    lsar(`${baseDir}/${paths[i]}`);
+    if (i % logInterval === 0) {
+      const time = process.hrtime(hrstart);
+      const percent = ((i / numGames) * 100).toFixed(2);
+      console.log(chalk.dim(pretty(time)), `${percent}%`, `Game ${i} of ${numGames}`);
+    }
+  }
+  console.log(`Actually done in ${pretty(time)}`);
+}
+
+async function listGames(baseDir) {
+  const hrstart = process.hrtime();
+  const absPaths = await readDirRec(baseDir, [f => f.match(/\/\.[^\/]/)]);
+  const paths = absPaths.map(absPath => absPath.slice(baseDir.length));
+  const numGames = paths.length;
+  const time = process.hrtime(hrstart);
+  return { baseDir, paths, numGames, time };
+}
 
 (async () => {
-  console.log("\x1Bc");
-
-  const paths = [
-    `${__dirname}/src/models/sevenZip/7ziptest/btchamp.7z`,
-    "/Users/lbombach/Downloads/Retro/MAME/MAME_0188u0_Complete_Romset/roms/2mindril.7z",
-    "/Users/lbombach/Downloads/Retro/MAME/MAME_0188u0_Complete_Romset/roms/garou.7z",
-    "/Users/lbombach/Downloads/Retro/MAME/MAME_0188u0_Complete_Romset/roms/hbf700s.7z",
-    "/Users/lbombach/Downloads/Retro/MAME/MAME_0188u0_Complete_Romset/roms/j6camelta.7z",
-    "/Users/lbombach/Downloads/Retro/MAME/MAME_0188u0_Complete_Romset/roms/mslugx.7z"
-  ];
-
-  console.time("Execution Time");
-
-  const data = await parseFile(paths[3]);
-
-  console.timeEnd("Execution Time");
-  console.log("\n", JSON.stringify(data, null, 2), "\n");
-
-  process.exit(0);
+  await indexFolder("/Users/lbombach/Downloads/Retro/MAME/Mame32");
 })();

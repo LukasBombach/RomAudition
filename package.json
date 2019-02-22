@@ -12,12 +12,16 @@
   "dependencies": {
     "7zip-bin": "4.1.0",
     "adm-zip": "0.4.13",
+    "all-unpacker": "0.1.2",
     "bitwise": "2.0.1",
+    "chalk": "2.4.2",
     "int64-buffer": "0.99.1007",
     "lodash": "4.17.11",
+    "lzma-native": "4.0.3",
     "mongodb": "3.1.11",
     "nodemon": "1.18.9",
     "p-queue": "3.0.0",
+    "pretty-hrtime": "1.0.3",
     "recursive-readdir": "2.2.2",
     "xml2js": "0.4.19"
   },

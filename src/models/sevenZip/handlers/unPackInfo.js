@@ -38,11 +38,13 @@ module.exports = async function unPackInfo(file) {
   if (nextMarker === kCRC) {
     await digests(file, numFolders);
     const endMarker = await file.byte(); // ok
+    if (nextMarker !== kEnd) throw new Error("Expected end marker");
+    return;
   } else if (nextMarker === kEnd) {
     return;
   }
 
-  throw new Error("Code should not have been terminated before");
+  throw new Error("Code should have been terminated before");
 };
 
 async function digests(file, num) {
