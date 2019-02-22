@@ -14,14 +14,15 @@ async function indexFolder(path) {
     const game = getGame(baseDir, paths[i]);
     const filter = { baseDir, path: game.path };
     await collection.updateOne(filter, { $set: game }, { upsert: true });
-    if (i % logInterval === 0) {
+    /* if (i % logInterval === 0) {
       const time = process.hrtime(hrstart);
       const percent = ((i / numGames) * 100).toFixed(2);
-      console.log(chalk.dim(pretty(time)), `${percent}%`, `Game ${i} of ${numGames}`);
-    }
+      console.log(chalk.dim(`${pretty(time)}`), `${percent}%`, `Game ${i} of ${numGames}`);
+    } */
   }
   await Store.disconnect();
-  console.log(`✨  Actually done in ${pretty(time)} (${numGames} games)`);
+  const end = process.hrtime(hrstart);
+  console.log(`✨  Processed in ${pretty(end)} (${numGames} games)`);
 }
 
 async function listGames(baseDir) {
