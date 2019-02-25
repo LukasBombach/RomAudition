@@ -4,12 +4,17 @@ const mongoUrl = "mongodb://localhost:27017";
 const dbName = "rom-audition";
 
 class Store {
-  static async getCollection(namespace, name, options = {}) {
+  static async setupDatabase() {
     const db = await Store.connectToDatabase();
-    const collections = await db.collections();
-    const collectionName = `${namespace}.${name}`;
-    if (!collections.includes(collectionName)) await db.createCollection(collectionName, options);
-    return await db.collection(collectionName);
+    await db.createCollection("files", {});
+    const collection = await db.collection("files");
+    await collection.createIndex({ baseDir: "text", path: "text" });
+    await Store.disconnect();
+  }
+
+  static async getCollection(name) {
+    const db = await Store.connectToDatabase();
+    return await db.collection(name);
   }
 
   static async connectToDatabase() {

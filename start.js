@@ -1,15 +1,14 @@
-const readDirRec = require("recursive-readdir");
+const fs = require("fs").promises;
+const { join } = require("path");
 const lsar = require("lsar-native");
 const pretty = require("pretty-hrtime");
 const chalk = require("chalk");
 const _ = require("lodash");
 const Store = require("./src/models/store");
 
-const includeFiles = "(*.zip|*.7z)";
-
 async function indexFolder(path) {
   const hrstart = process.hrtime();
-  const collection = await Store.getCollection("rom-audition", "files");
+  const collection = await Store.getCollection("files");
   const { baseDir, paths, numGames, time } = await listGames(path);
   const chunksSize = Math.floor(numGames / 100);
   const gameChunks = _.chunk(paths, chunksSize);
@@ -34,7 +33,7 @@ async function indexFolder(path) {
 
 async function listGames(baseDir) {
   const hrstart = process.hrtime();
-  const absPaths = await readDirRec(baseDir, [includeFiles]);
+  const absPaths = await readDirRec(baseDir, /\.(zip|7z)$/);
   const paths = absPaths.map(absPath => absPath.slice(baseDir.length));
   const numGames = paths.length;
   const time = process.hrtime(hrstart);
@@ -62,6 +61,17 @@ async function batchUpsertDatabase(collection, games) {
   await bulk.execute();
 }
 
+async function readDirRec(path, match = /.*/) {
+  const files = await fs.readdir(path);
+  const paths = files.map(file => join(path, file));
+  for (const subPath of paths) {
+    const stat = await fs.lstat(subPath);
+    if (stat.isDirectory()) paths.push(...(await readDirRec(subPath)));
+  }
+  return paths.filter(path => match.test(path));
+}
+
 (async () => {
+  await Store.setupDatabase();
   await indexFolder("/Users/lbombach/Downloads/Retro/MAME/MAME_0188u0_Complete_Romset");
 })();
